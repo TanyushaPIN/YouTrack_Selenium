@@ -47,9 +47,3 @@ allure-report/
 
 # Переменные окружения
 .env
-
-.idea/
-
-.allure/
-
-screenshots/
