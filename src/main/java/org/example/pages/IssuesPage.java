@@ -2,57 +2,40 @@ package org.example.pages;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
-
-public class IssuesPage {
-    private final WebDriver driver;
-    private final WebDriverWait wait;
+public class IssuesPage extends  BasePage {
 
     private final By summaryField =
-            By.cssSelector("textarea[data-test='summary']");
+            By.xpath("//textarea[@data-test='summary']");
 
     private final By descriptionField =
-            By.cssSelector("div[data-test='wysiwyg-editor-content']");
+            By.xpath("//div[@data-test='wysiwyg-editor-content']");
 
-    private  final  By createButton =
-            By.cssSelector("button[data-test='submit-button']");
+    private final By createButton =
+            By.xpath("//button[@data-test='submit-button']");
 
     private final By newIssueButton =
-            By.cssSelector("[data-test='createIssueButton']");
+            By.xpath("//*[@data-test='createIssueButton']");
 
     private final By issuesTab =
-            By.linkText("Issues");
+            By.xpath("//a[normalize-space()='Issues']");
 
     private final By issueSummary =
-            By.cssSelector("h1[data-test='ticket-summary']");
+            By.xpath("//h1[@data-test='ticket-summary']");
 
     private final By searchField =
-            By.cssSelector("input[data-test='ring-select__focus']");
+            By.xpath("//input[@data-test='ring-select__focus']");
 
-    private final By foundIssueId =
-            By.cssSelector("a[data-test='ring-link ticket-id']");
+
+    private final String foundIssueId =
+            "//a[@data-test='ring-link ticket-id' and normalize-space()='%s']";
 
     public IssuesPage(WebDriver driver){
-        this.driver = driver;
-        this.wait = new WebDriverWait(
-                driver,
-                Duration.ofSeconds(10)
-        );
+        super(driver);
     }
 
     public void openIssuesTab() {
-        //System.out.println("До перехода: " + driver.getCurrentUrl());
-
-        WebElement tab = wait.until(
-                ExpectedConditions.elementToBeClickable(issuesTab)
-        );
-
-        //System.out.println("Нашли ссылку Issues: " + tab.getText());
-        //System.out.println("Ссылка ведёт на: " + tab.getAttribute("href"));
-
-        tab.click();
+        click(issuesTab);
 
         try {
             wait.until(
@@ -66,10 +49,7 @@ public class IssuesPage {
     }
 
     public void openCreateIssueForm(){
-        WebElement button = wait.until(
-                ExpectedConditions.elementToBeClickable(newIssueButton)
-        );
-        button.click();
+        click(newIssueButton);
     }
     public void enterSummary(String summary) {
         WebElement field = wait.until(
@@ -90,17 +70,14 @@ public class IssuesPage {
         field.click();
         field.sendKeys(description);
     }
+
     public void clickCreate(){
-        WebElement button = wait.until(
-                ExpectedConditions.elementToBeClickable(createButton)
-        );
-        button.click();
+        click(createButton);
 
         wait.until(
                 ExpectedConditions.visibilityOfElementLocated(issueSummary)
         );
 
-        //System.out.println("Текущий URL: " + driver.getCurrentUrl());
     }
 
     public boolean isIssueOpened(String summary) {
@@ -119,40 +96,22 @@ public class IssuesPage {
         );
         field.click();
         field.sendKeys(query);
-
-//        System.out.println(
-//                "Текст в поле поиска: " + field.getAttribute("value")
-//        );
-
         field.sendKeys(Keys.ENTER);
 
         wait.until(
                 driver -> driver.getCurrentUrl().contains("q=")
         );
-
-//        System.out.println(
-//                "URL после Enter: " + driver.getCurrentUrl()
-//        );
     }
 
     public boolean isIssueFound(String issueId) {
-        By issueLink = By.xpath(
-                "//a[@data-test='ring-link ticket-id' and text()='" + issueId + "']"
+        By locator = By.xpath(
+                String.format(foundIssueId, issueId)
         );
 
-        try {
-            wait.until(
-                    ExpectedConditions.visibilityOfElementLocated(issueLink)
-            );
-            return true;
-        } catch (TimeoutException e) {
-            return false;
-        }
+        return isDisplayed(locator);
     }
 
     public boolean isIssuesPageOpened() {
-        return wait.until(
-                ExpectedConditions.visibilityOfElementLocated(newIssueButton)
-        ).isDisplayed();
+        return isDisplayed(newIssueButton);
     }
 }

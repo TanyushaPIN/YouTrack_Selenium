@@ -20,9 +20,6 @@ public class IssueTest extends AuthenticatedTest {
         issuesPage.enterDescription(description);
         issuesPage.clickCreate();
 
-//        System.out.println("Название на странице: " +
-//                driver.findElement(By.cssSelector("h1[data-test='ticket-summary']")).getText());
-
         assertTrue(
                 issuesPage.isIssueOpened(summary),
                 "Страница созданной задачи не содержит название: " + summary
