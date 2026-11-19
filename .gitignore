@@ -41,6 +41,7 @@ build/
 # Allure
 allure-results/
 allure-report/
+.allure
 
 # Логи
 *.log
