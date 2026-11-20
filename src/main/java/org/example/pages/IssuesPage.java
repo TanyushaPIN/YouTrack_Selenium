@@ -26,7 +26,6 @@ public class IssuesPage extends  BasePage {
     private final By searchField =
             By.xpath("//input[@data-test='ring-select__focus']");
 
-
     private final String foundIssueId =
             "//a[@data-test='ring-link ticket-id' and normalize-space()='%s']";
 
@@ -104,11 +103,7 @@ public class IssuesPage extends  BasePage {
     }
 
     public boolean isIssueFound(String issueId) {
-        By locator = By.xpath(
-                String.format(foundIssueId, issueId)
-        );
-
-        return isDisplayed(locator);
+        return isDisplayed(By.xpath(String.format(foundIssueId, issueId)));
     }
 
     public boolean isIssuesPageOpened() {
